@@ -15,6 +15,9 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import Navbar from "../components/Navbar";
 import { useQuery } from "react-query";
 
@@ -111,7 +114,7 @@ export default function CustomPaginationActionsTable() {
 
   return (
     <div>
-      <Navbar />
+    <Navbar />
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
         <TableBody>
@@ -124,7 +127,11 @@ export default function CustomPaginationActionsTable() {
                 {todo.title}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
-                {todo.completed ? 'Completada' : 'Pendiente'}
+                <FormGroup>        
+                {todo.completed ? 
+                  <FormControlLabel control={<Checkbox defaultChecked />} label="Completado" /> : 
+                    <FormControlLabel control={<Checkbox />} label="Pendiente" />}
+                </FormGroup>
               </TableCell>
             </TableRow>
           ))}
