@@ -14,11 +14,16 @@ const Navbar = () => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {user ? `To Do List Web de ${user.name}` : 'To Do List Web'}
+          {'To Do List Web'}
         </Typography>
-        <Button color="inherit" component={Link} to="/">
-          Login
-        </Button>
+        { user ? 
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            {`Bienvenido, ${user.name}`}
+          </Typography>: 
+          <Button color="inherit" component={Link} to="/">
+            Login
+          </Button>
+        }
         <Button color="inherit" component={Link} to="/TodoList">
           To Do List
         </Button>
