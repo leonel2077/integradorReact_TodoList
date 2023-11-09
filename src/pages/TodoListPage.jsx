@@ -15,11 +15,11 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Navbar from "../components/Navbar";
-import { useQuery } from "react-query";
+import { useTask } from '../contexts/TaskContext';
+
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -86,22 +86,10 @@ TablePaginationActions.propTypes = {
 export default function CustomPaginationActionsTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { data: todos, isLoading, isError } = useQuery("todos", async () => {
-    const response = await fetch("https://jsonplaceholder.typicode.com/todos");
-    const data = await response.json();
-    return data;
-  });
+  const { tasks, updateTaskStatus } = useTask();
 
-  if (isLoading) {
-    return <div>Cargando...</div>;
-  }
-
-  if (isError) {
-    return <div>Error al cargar las tareas</div>;
-  }
-  
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - todos.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tasks.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -112,6 +100,10 @@ export default function CustomPaginationActionsTable() {
     setPage(0);
   };
 
+  const handleCheckboxChange = (taskId, completed) => {
+    updateTaskStatus(taskId, completed);
+  };
+
   return (
     <div>
     <Navbar />
@@ -119,21 +111,27 @@ export default function CustomPaginationActionsTable() {
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
         <TableBody>
           {(rowsPerPage > 0
-            ? todos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : todos
-          ).map((todo) => (
-            <TableRow key={todo.title}>
-              <TableCell component="th" scope="row">
-                {todo.title}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                <FormGroup>        
-                {todo.completed ? 
-                  <FormControlLabel control={<Checkbox defaultChecked />} label="Completado" /> : 
-                    <FormControlLabel control={<Checkbox />} label="Pendiente" />}
-                </FormGroup>
-              </TableCell>
-            </TableRow>
+            ? tasks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : tasks
+          ).map((task) => (
+            <TableRow key={task.id}>
+            <TableCell component="th" scope="row">
+              {task.title}
+            </TableCell>
+            <TableCell style={{ width: 160 }} align="right">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={task.completed}
+                    onChange={(e) =>
+                      handleCheckboxChange(task.id, e.target.checked)
+                    }
+                  />
+                }
+                label={task.completed ? 'Completado' : 'Pendiente'}
+              />
+            </TableCell>
+          </TableRow>
           ))}
           {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
@@ -146,7 +144,7 @@ export default function CustomPaginationActionsTable() {
             <TablePagination
               rowsPerPageOptions={[5, 10, 15, 20]}
               colSpan={3}
-              count={todos.length}
+              count={tasks.length}
               rowsPerPage={rowsPerPage}
               page={page}
               SelectProps={{
