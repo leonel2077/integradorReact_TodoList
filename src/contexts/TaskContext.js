@@ -9,6 +9,7 @@ export const useTask = () => {
 export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
 
+  // Llamada a la API
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -16,13 +17,14 @@ export const TaskProvider = ({ children }) => {
         const data = await response.json();
         setTasks(data);
       } catch (error) {
-        console.error('Error fetching tasks:', error);
+        console.error('Error al obtener tareas:', error);
       }
     };
 
     fetchData();
   }, []); 
 
+  // Función para cambiar el estado de la tarea
   const updateTaskStatus = (taskId, completed) => {
     const updatedTasks = tasks.map((task) =>
       task.id === taskId ? { ...task, completed } : task
