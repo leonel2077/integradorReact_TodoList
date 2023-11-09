@@ -1,14 +1,16 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Box from '@mui/material/Box';
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Box,
+  Typography,
+  Container,
+} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -21,9 +23,9 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const user = data.get('user');
-    const password = data.get('password');
+    const formData = new FormData(event.target);
+    const user = formData.get('user');
+    const password = formData.get('password');
 
     if (login(user, password)) {
       updateUser({ name: user });
@@ -58,7 +60,7 @@ export default function Login() {
               required
               fullWidth
               id="user"
-              label=" Usuario"
+              label="Usuario"
               name="user"
               autoComplete="user"
               autoFocus
